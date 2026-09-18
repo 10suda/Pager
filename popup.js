@@ -1,4 +1,10 @@
 import { getPage, getState, normalizeUrl, saveState } from "./store.js";
+import { createPagerClient } from "./cloud.js";
+
+// Phase 1 only prepares the cloud client. Until Supabase is configured and the
+// shared schema exists, Pager deliberately continues using its local MVP store.
+const pagerCloudClient = createPagerClient();
+console.info(`Pager data mode: ${pagerCloudClient ? "cloud-ready" : "local"}`);
 
 const els = {
   main: document.querySelector("#mainContent"),

@@ -9,17 +9,50 @@ Pager is a Chrome extension that adds a Reddit-like discussion layer to every we
 - Comment voting and deletion
 - Persistent local profile and data using `chrome.storage.local`
 - URL normalization so tracking parameters and fragments do not split discussions
-- Accessible, responsive Manifest V3 popup with no build step or runtime dependencies
+- Accessible, responsive Manifest V3 popup
+- Reproducible build pipeline that bundles dependencies locally
 
 > **Storage note:** v0.1 is a local-first prototype. Votes and comments persist in the current Chrome profile, but are not yet shared between users. The UI and storage layer are separated so the local adapter can be replaced with an authenticated API in the next phase.
 
-## Load in Chrome
+## Development setup
 
-1. Download or clone this repository.
-2. Open `chrome://extensions`.
-3. Enable **Developer mode**.
-4. Choose **Load unpacked** and select this repository folder.
-5. Pin Pager, open any `http` or `https` webpage, and click the Pager icon.
+Requirements: Node.js 20 or newer and npm.
+
+```bash
+git clone https://github.com/10suda/Pager.git
+cd Pager
+npm install
+npm run check
+```
+
+Then:
+
+1. Open `chrome://extensions`.
+2. Enable **Developer mode**.
+3. Choose **Load unpacked** and select the generated `dist` folder.
+4. Pin Pager, open any `http` or `https` webpage, and click the Pager icon.
+
+Run `npm run build` after changing extension source files, then click the reload
+button on Pager's `chrome://extensions` card.
+
+## Supabase configuration
+
+Pager remains in local MVP mode when cloud configuration is absent. To prepare a
+cloud-connected development build:
+
+```bash
+cp .env.example .env
+```
+
+Fill in the development project's URL and **publishable** key, then run:
+
+```bash
+npm run check
+```
+
+The build adds only that project's HTTPS origin to `host_permissions`. Never add
+a Supabase `service_role` or secret key to `.env`, source control, or an extension
+bundle.
 
 ## Architecture
 
@@ -30,6 +63,8 @@ Pager is a Chrome extension that adds a Reddit-like discussion layer to every we
 | `popup.css` | Pager visual system and layout |
 | `popup.js` | UI events, rendering, and page interaction |
 | `store.js` | Persistence and canonical URL logic |
+| `cloud.js` | Supabase client factory and cloud configuration |
+| `scripts/build.mjs` | Produces the loadable `dist` extension |
 
 No host permissions or content scripts are required. Pager only reads the active tab's URL, title, and favicon when opened.
 
