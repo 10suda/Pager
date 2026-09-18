@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pager</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Pager home">
+          <span class="brand-mark" aria-hidden="true">P</span>
+          <span>Pager</span>
+        </a>
+        <button class="icon-button" id="settingsButton" aria-label="Change display name" title="Change display name">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.41 1.41-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55v.1h-2v-.1a1.7 1.7 0 0 0-1.06-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.41-1.41.06-.06A1.7 1.7 0 0 0 9.4 15a1.7 1.7 0 0 0-1.55-1H7.8v-2h.05a1.7 1.7 0 0 0 1.55-1.06 1.7 1.7 0 0 0-.34-1.88L9 9l1.41-1.41.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1-1.55V6.4h2v.04a1.7 1.7 0 0 0 1.06 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 9l-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.95 12H21v2h-.05A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+        </button>
+      </header>
+
+      <main id="mainContent">
+        <section class="page-card" aria-labelledby="pageTitle">
+          <div class="site-row">
+            <img id="favicon" class="favicon" alt="" />
+            <span id="hostname" class="hostname">Current page</span>
+          </div>
+          <h1 id="pageTitle">Loading this page…</h1>
+          <div class="page-actions">
+            <div class="vote-control" aria-label="Vote on this page">
+              <button id="upvoteButton" class="vote-button" aria-label="Upvote page" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 5 7 8h-4v6H9v-6H5l7-8Z"/></svg>
+              </button>
+              <span id="pageScore" class="page-score" aria-live="polite">0</span>
+              <button id="downvoteButton" class="vote-button" aria-label="Downvote page" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 19-7-8h4V5h6v6h4l-7 8Z"/></svg>
+              </button>
+            </div>
+            <button id="shareButton" class="share-button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a3 3 0 1 0-2.83-4A3 3 0 0 0 15 5c0 .22.02.43.07.63l-6.1 3.05a3 3 0 1 0 0 4.64l6.1 3.05A3 3 0 0 0 15 17c0 .35.06.69.17 1A3 3 0 1 0 17 15.17l-6.1-3.05a3 3 0 0 0 0-.24l6.1-3.05c.31.11.65.17 1 .17Z"/></svg>
+              <span>Copy link</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="discussion" aria-labelledby="discussionTitle">
+          <div class="section-heading">
+            <div>
+              <h2 id="discussionTitle">Discussion</h2>
+              <span id="commentCount" class="comment-count">0 comments</span>
+            </div>
+            <label class="sort-label">
+              <span class="sr-only">Sort comments</span>
+              <select id="sortSelect">
+                <option value="top">Top</option>
+                <option value="new">New</option>
+              </select>
+            </label>
+          </div>
+
+          <form id="commentForm" class="comment-form">
+            <label class="sr-only" for="commentInput">Add a comment</label>
+            <textarea id="commentInput" maxlength="1000" rows="3" placeholder="What do you think about this page?" required></textarea>
+            <div class="composer-footer">
+              <span>Posting as <strong id="postingAs">Guest</strong></span>
+              <button class="primary-button" type="submit">Comment</button>
+            </div>
+          </form>
+
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20 15a4 4 0 0 1-4 4H8l-4 3v-7a4 4 0 0 1-1-2.65V7a4 4 0 0 1 4-4h9a4 4 0 0 1 4 4v8Z"/></svg>
+            </div>
+            <h3>Start the conversation</h3>
+            <p>Be the first to leave a thought about this page.</p>
+          </div>
+          <ol id="commentList" class="comment-list"></ol>
+        </section>
+      </main>
+
+      <section id="unsupportedState" class="unsupported-state" hidden>
+        <div class="empty-icon"><span aria-hidden="true">P</span></div>
+        <h1>Pager can’t open here</h1>
+        <p>Open a regular webpage, then click the Pager icon again.</p>
+      </section>
+    </div>
+
+    <dialog id="settingsDialog">
+      <form id="settingsForm" method="dialog">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">Your identity</span>
+            <h2>Choose a display name</h2>
+          </div>
+          <button id="closeSettings" class="icon-button" type="button" aria-label="Close">×</button>
+        </div>
+        <p class="dialog-copy">This name appears beside comments you post from this browser.</p>
+        <label for="displayNameInput">Display name</label>
+        <input id="displayNameInput" maxlength="24" autocomplete="nickname" required />
+        <div class="dialog-actions">
+          <button id="cancelSettings" class="secondary-button" type="button">Cancel</button>
+          <button class="primary-button" type="submit">Save name</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
