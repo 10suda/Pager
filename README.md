@@ -12,7 +12,9 @@ Pager is a Chrome extension that adds a Reddit-like discussion layer to every we
 - Accessible, responsive Manifest V3 popup
 - Reproducible build pipeline that bundles dependencies locally
 
-> **Storage note:** v0.1 is a local-first prototype. Votes and comments persist in the current Chrome profile, but are not yet shared between users. The UI and storage layer are separated so the local adapter can be replaced with an authenticated API in the next phase.
+> **Storage note:** v0.1 still uses local storage in the extension UI. The shared
+> Supabase schema and security rules are now deployed; connecting the UI to them
+> is the next phase.
 
 ## Development setup
 
@@ -54,6 +56,20 @@ The build adds only that project's HTTPS origin to `host_permissions`. Never add
 a Supabase `service_role` or secret key to `.env`, source control, or an extension
 bundle.
 
+## Database development
+
+The `supabase` directory contains Pager's reproducible database configuration:
+
+- `migrations/20260918161400_pager_initial_schema.sql` creates profiles, pages,
+  comments, votes, reports, blocks, score triggers, and row-level security;
+- `database.types.ts` contains generated TypeScript types for the deployed schema;
+- `config.toml` enables anonymous users locally and disables accidental Data API
+  grants for new tables.
+
+Anonymous Supabase users receive a stable generated pseudonym such as
+`CopperOtter-482193`. Raw vote rows are private, public scores are maintained by
+database triggers, and browser clients cannot update aggregate scores directly.
+
 ## Architecture
 
 | File | Purpose |
@@ -68,17 +84,12 @@ bundle.
 
 No host permissions or content scripts are required. Pager only reads the active tab's URL, title, and favicon when opened.
 
-## Next phase: shared community data
+## Next phase: connect the extension
 
-Replace `store.js` with a remote adapter backed by a service such as Supabase, Firebase, or a small API with PostgreSQL. A production data model should include:
-
-- authenticated users and public profiles;
-- canonical pages keyed by normalized URL;
-- one page vote and one comment vote per user;
-- comments, replies, reports, and moderation state;
-- rate limiting, abuse prevention, and server-side score aggregation.
-
-Keep API credentials and privileged keys out of the extension. Only a public client key belongs in the packaged client; authorization must be enforced by the backend.
+Replace the local `store.js` adapter with a Supabase-backed adapter, create or
+restore an anonymous session when Pager opens, and map the existing UI actions to
+the secured tables. Keep privileged keys out of the extension; only the public
+publishable key belongs in the packaged client.
 
 ## License
 
