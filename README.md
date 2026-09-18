@@ -16,7 +16,7 @@ Pager is a Chrome extension that adds a Reddit-like discussion layer to every we
 
 ## Development setup
 
-Requirements: Node.js 20 or newer and npm.
+Requirements: Node.js 22 or newer and npm.
 
 ```bash
 git clone https://github.com/10suda/Pager.git
