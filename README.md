@@ -7,14 +7,16 @@ Pager is a Chrome extension that adds a Reddit-like discussion layer to every we
 - Page-specific upvotes and downvotes
 - Page-specific comments with top/new sorting
 - Comment voting and deletion
-- Persistent local profile and data using `chrome.storage.local`
+- Shared discussions backed by Supabase
+- Persistent anonymous identity stored in `chrome.storage.local`
 - URL normalization so tracking parameters and fragments do not split discussions
 - Accessible, responsive Manifest V3 popup
 - Reproducible build pipeline that bundles dependencies locally
 
-> **Storage note:** v0.1 still uses local storage in the extension UI. The shared
-> Supabase schema and security rules are now deployed; connecting the UI to them
-> is the next phase.
+> **Identity note:** Pager creates an anonymous Supabase user the first time the
+> configured extension opens. The generated pseudonym persists in that Chrome
+> profile. Clearing Pager's extension storage or uninstalling it creates a new
+> identity; Pager does not use IP or MAC addresses as identity keys.
 
 ## Development setup
 
@@ -39,8 +41,8 @@ button on Pager's `chrome://extensions` card.
 
 ## Supabase configuration
 
-Pager remains in local MVP mode when cloud configuration is absent. To prepare a
-cloud-connected development build:
+Pager uses a local preview store when cloud configuration is absent. To create a
+shared, cloud-connected build:
 
 ```bash
 cp .env.example .env
@@ -78,18 +80,23 @@ database triggers, and browser clients cannot update aggregate scores directly.
 | `popup.html` | Semantic popup structure |
 | `popup.css` | Pager visual system and layout |
 | `popup.js` | UI events, rendering, and page interaction |
-| `store.js` | Persistence and canonical URL logic |
+| `store.js` | Local persistence and canonical URL logic |
 | `cloud.js` | Supabase client factory and cloud configuration |
+| `cloud-store.js` | Anonymous auth and secured shared-data operations |
+| `local-store.js` | Offline/local preview adapter |
 | `scripts/build.mjs` | Produces the loadable `dist` extension |
 
-No host permissions or content scripts are required. Pager only reads the active tab's URL, title, and favicon when opened.
+Pager uses no content scripts or broad website access. A configured build grants
+network access only to its Supabase project origin, and Pager reads the active
+tab's URL, title, and favicon only when opened.
 
-## Next phase: connect the extension
+## Cloud behavior
 
-Replace the local `store.js` adapter with a Supabase-backed adapter, create or
-restore an anonymous session when Pager opens, and map the existing UI actions to
-the secured tables. Keep privileged keys out of the extension; only the public
-publishable key belongs in the packaged client.
+On first open, Pager creates an anonymous Supabase session and receives a stable
+generated pseudonym. Opening a webpage creates or retrieves its canonical page
+record. Comments and votes are shared across installations, while row-level
+security limits each browser identity to its own votes and comments. Only the
+public publishable key is packaged with the extension.
 
 ## License
 

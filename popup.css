@@ -26,6 +26,7 @@ html, body {
 
 button, input, textarea, select { font: inherit; }
 button { color: inherit; }
+button:disabled, textarea:disabled, select:disabled { cursor: wait; opacity: .58; }
 
 .app-shell { min-height: 580px; }
 
@@ -141,17 +142,22 @@ button { color: inherit; }
 .comment-form textarea { display: block; width: 100%; min-height: 75px; padding: 12px; border: 0; outline: 0; resize: vertical; color: var(--ink); background: transparent; line-height: 1.45; }
 .comment-form textarea::placeholder { color: #9aa49f; }
 .composer-footer { padding: 8px 9px 8px 12px; border-top: 1px solid #edf0ee; display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 11px; }
+#dataMode { color: var(--green); font-weight: 700; }
 
 .primary-button, .secondary-button { border-radius: 9px; padding: 8px 13px; font-weight: 750; border: 0; cursor: pointer; }
 .primary-button { color: #fff; background: var(--green); }
 .primary-button:hover { background: #116a4c; }
 .secondary-button { background: var(--canvas); border: 1px solid var(--line); }
 
-.empty-state, .unsupported-state { text-align: center; padding: 36px 22px; color: var(--muted); }
+.empty-state, .unsupported-state, .system-state { text-align: center; padding: 36px 22px; color: var(--muted); }
 .empty-icon { width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center; margin: 0 auto 12px; background: var(--green-soft); color: var(--green); }
 .empty-icon svg { width: 23px; fill: none; stroke: currentColor; stroke-width: 1.6; }
-.empty-state h3, .unsupported-state h1 { margin: 0 0 5px; color: var(--ink); font-size: 15px; }
-.empty-state p, .unsupported-state p { margin: 0; font-size: 12px; line-height: 1.5; }
+.empty-state h3, .unsupported-state h1, .system-state h1 { margin: 0 0 5px; color: var(--ink); font-size: 15px; }
+.empty-state p, .unsupported-state p, .system-state p { margin: 0; font-size: 12px; line-height: 1.5; }
+.system-state { padding-top: 150px; }
+.system-state .primary-button { margin-top: 16px; }
+.loading-spinner { width: 36px; height: 36px; margin: 0 auto 16px; border: 3px solid #dfe9e4; border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .comment-list { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 12px; }
 .comment { position: relative; padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
@@ -170,14 +176,15 @@ button { color: inherit; }
 
 dialog { width: 356px; padding: 0; border: 0; border-radius: 17px; box-shadow: var(--shadow); color: var(--ink); }
 dialog::backdrop { background: rgba(13, 20, 16, 0.44); }
-dialog form { padding: 20px; }
+dialog .identity-panel { padding: 20px; }
 .dialog-heading { display: flex; justify-content: space-between; align-items: flex-start; }
 .dialog-heading h2 { margin: 3px 0 0; font-size: 19px; }
 .eyebrow { color: var(--brand-dark); text-transform: uppercase; letter-spacing: .09em; font-size: 10px; font-weight: 850; }
 .dialog-copy { margin: 9px 0 16px; color: var(--muted); line-height: 1.45; font-size: 12px; }
-dialog label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 750; }
-dialog input { width: 100%; padding: 10px 11px; border: 1px solid #ccd5d0; border-radius: 10px; outline: 0; }
-dialog input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23, 126, 91, .1); }
+.identity-id { padding: 11px 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--canvas); }
+.identity-id span { display: block; margin-bottom: 4px; color: var(--muted); font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
+.identity-id code { display: block; overflow: hidden; color: var(--ink); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.identity-note { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
 .dialog-actions { margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px; }
 
 .toast { position: fixed; left: 50%; bottom: 16px; z-index: 20; transform: translate(-50%, 12px); padding: 9px 13px; border-radius: 10px; color: #fff; background: #1f2924; box-shadow: var(--shadow); font-size: 12px; font-weight: 650; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
@@ -186,4 +193,7 @@ dialog input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23, 
 .unsupported-state .empty-icon span { font-size: 22px; font-weight: 900; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; }
+  .loading-spinner { animation: none; }
+}

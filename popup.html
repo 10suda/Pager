@@ -13,12 +13,12 @@
           <span class="brand-mark" aria-hidden="true">P</span>
           <span>Pager</span>
         </a>
-        <button class="icon-button" id="settingsButton" aria-label="Change display name" title="Change display name">
+        <button class="icon-button" id="identityButton" aria-label="View your Pager identity" title="Your Pager identity" disabled>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-1.41 1.41-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55v.1h-2v-.1a1.7 1.7 0 0 0-1.06-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-1.41-1.41.06-.06A1.7 1.7 0 0 0 9.4 15a1.7 1.7 0 0 0-1.55-1H7.8v-2h.05a1.7 1.7 0 0 0 1.55-1.06 1.7 1.7 0 0 0-.34-1.88L9 9l1.41-1.41.06.06a1.7 1.7 0 0 0 1.88.34 1.7 1.7 0 0 0 1-1.55V6.4h2v.04a1.7 1.7 0 0 0 1.06 1.55 1.7 1.7 0 0 0 1.88-.34l.06-.06L19.8 9l-.06.06a1.7 1.7 0 0 0-.34 1.88A1.7 1.7 0 0 0 20.95 12H21v2h-.05A1.7 1.7 0 0 0 19.4 15Z"/></svg>
         </button>
       </header>
 
-      <main id="mainContent">
+      <main id="mainContent" hidden aria-busy="true">
         <section class="page-card" aria-labelledby="pageTitle">
           <div class="site-row">
             <img id="favicon" class="favicon" alt="" />
@@ -59,9 +59,9 @@
 
           <form id="commentForm" class="comment-form">
             <label class="sr-only" for="commentInput">Add a comment</label>
-            <textarea id="commentInput" maxlength="1000" rows="3" placeholder="What do you think about this page?" required></textarea>
+            <textarea id="commentInput" maxlength="2000" rows="3" placeholder="What do you think about this page?" required></textarea>
             <div class="composer-footer">
-              <span>Posting as <strong id="postingAs">Guest</strong></span>
+              <span>Posting as <strong id="postingAs">Pager user</strong> · <span id="dataMode">Connecting…</span></span>
               <button class="primary-button" type="submit">Comment</button>
             </div>
           </form>
@@ -77,6 +77,19 @@
         </section>
       </main>
 
+      <section id="loadingState" class="system-state" aria-live="polite">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <h1>Opening this discussion…</h1>
+        <p>Connecting you to Pager.</p>
+      </section>
+
+      <section id="errorState" class="system-state" hidden>
+        <div class="empty-icon" aria-hidden="true">!</div>
+        <h1>Pager couldn’t open</h1>
+        <p id="errorMessage">Something went wrong while loading this discussion.</p>
+        <button id="retryButton" class="primary-button" type="button">Try again</button>
+      </section>
+
       <section id="unsupportedState" class="unsupported-state" hidden>
         <div class="empty-icon"><span aria-hidden="true">P</span></div>
         <h1>Pager can’t open here</h1>
@@ -84,23 +97,25 @@
       </section>
     </div>
 
-    <dialog id="settingsDialog">
-      <form id="settingsForm" method="dialog">
+    <dialog id="identityDialog">
+      <div class="identity-panel">
         <div class="dialog-heading">
           <div>
             <span class="eyebrow">Your identity</span>
-            <h2>Choose a display name</h2>
+            <h2 id="identityName">Pager user</h2>
           </div>
-          <button id="closeSettings" class="icon-button" type="button" aria-label="Close">×</button>
+          <button id="closeIdentity" class="icon-button" type="button" aria-label="Close">×</button>
         </div>
-        <p class="dialog-copy">This name appears beside comments you post from this browser.</p>
-        <label for="displayNameInput">Display name</label>
-        <input id="displayNameInput" maxlength="24" autocomplete="nickname" required />
+        <p class="dialog-copy">Pager generated this pseudonym for this browser. It stays with your comments and votes without collecting your IP or MAC address.</p>
+        <div class="identity-id">
+          <span>Identity ID</span>
+          <code id="identityId">Connecting…</code>
+        </div>
+        <p class="identity-note">Clearing this extension’s storage or removing Pager will create a new identity.</p>
         <div class="dialog-actions">
-          <button id="cancelSettings" class="secondary-button" type="button">Cancel</button>
-          <button class="primary-button" type="submit">Save name</button>
+          <button id="doneIdentity" class="primary-button" type="button">Done</button>
         </div>
-      </form>
+      </div>
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
